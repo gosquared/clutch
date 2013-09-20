@@ -5,4 +5,4 @@ Turn your single process node.js web server into a cluster of multiple processes
 
 ### Install
 
-`npm install clutch`
+`npm install gs-clutch`
