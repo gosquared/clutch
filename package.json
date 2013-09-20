@@ -1,0 +1,35 @@
+{
+  "name": "clutch",
+  "version": "0.0.0",
+  "description": "Runs & manages your web server app as a cluster of multiple workers",
+  "main": "lib/Clutch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gosquared/clutch"
+  },
+  "keywords": [
+    "node.js",
+    "cluster",
+    "server",
+    "processes"
+  ],
+  "contributors": [
+    {
+      "name": "Geoff Wagstaff",
+      "email": "geoff@gosquared.com",
+      "url": "http://geoffwagstaff.com"
+    },
+    {
+      "name": "JT",
+      "email": "jt@gosquared.com",
+      "url": "http://floopily.com"
+    }
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gosquared/clutch/issues"
+  }
+}
