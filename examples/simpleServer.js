@@ -12,4 +12,7 @@ if(cluster.isWorker){
   }).listen(5000);
 }
 
+// The callback for this event could be used to close off any open connections, resources, etc. before you program terminates
+clutch.on('shutDown', process.exit);
+
 // Now try requesting the server: curl 'http://localhost:5000/'
