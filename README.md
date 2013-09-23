@@ -70,7 +70,15 @@ Default: `true`
 
 Type: `boolean`
 
-Clutch can rename the title of the process so it's easier to inspect with tools such as `htop`, `ps` etc. Set this to false if you want to leave the title alone.
+Clutch can [rename](http://nodejs.org/api/process.html#process_process_title) the title of the process so it's easier to inspect with tools such as `htop`, `ps` etc. Set this to false if you want to leave the title alone.
+
+**name**
+
+Default: `server`
+
+Type: `string`
+
+The name to use as the label for the process title.
 
 **log**
 
