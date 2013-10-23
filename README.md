@@ -103,3 +103,29 @@ Type: `integer`
 Unit: ms
 
 Your application is expected to listen out for clutch's `shutDown` event, and exit the process after any required shutdown steps. When clutch emits `shutDown`, it also schedules a forced process exit if your application does not exit within this time. This option configures how long in milliseconds clutch waits before actioning the forced exit.
+
+**checkInterval**
+
+Default: `200`
+
+Minimum: `100`
+
+Type: `integer`
+
+Unit: ms
+
+How frequently worker health checks will run. The lower the value, the faster clutch will detect and respawn workers that do not appear to be functioning correctly.
+
+Worker health beacons will run at a frequency of half this interval.
+
+Since this relies on javascript timers you may want to raise this value if your app runs at high load. This gives worker health beacons more time to reach the master if the server is busy, and help prevent dead worker false positives.
+
+It is not recommended to set this value below 100ms, because the intervals might overlap as the frequency converges at lower values.
+
+**maxFails**
+
+Default: `6`
+
+Type: `integer`
+
+The number of times a worker should have consecutively failed health checks before being killed and replaced by a new worker.
