@@ -1,6 +1,6 @@
 {
   "name": "gs-clutch",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Runs & manages your web server app as a cluster of multiple workers",
   "main": "lib/Clutch.js",
   "scripts": {
