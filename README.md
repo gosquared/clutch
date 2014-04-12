@@ -78,7 +78,9 @@ Default: `server`
 
 Type: `string`
 
-The name to use as the label for the process title.
+The name to use as the label for the process title:
+
+![](http://cl.ly/image/2T1G1L1Z391w/Screen%20Shot%202014-04-11%20at%2015.42.48.png)
 
 **log**
 

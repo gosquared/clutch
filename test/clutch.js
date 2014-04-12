@@ -1,24 +1,40 @@
 var cluster = require('cluster');
 var Clutch = require('../lib/Clutch');
-var clutch;
+var clutch, server;
+
 var numWorkers = 4;
-before(function(){
-  clutch = Clutch({
-    numWorkers: numWorkers
+clutch = Clutch({
+  numWorkers: numWorkers
+});
+
+if (cluster.isMaster) {
+
+  before(function(done) {
+    clutch.once('listening', done);
   });
-});
 
-after(function(){
-  clutch.shutDown();
-});
+  after(function(done) {
+    clutch.once('shutDown', done);
+    clutch.shutDown();
+  });
 
-var setupTests = function(){
-
-  describe('clutch', function(){
-    it('sets up workers', function(){
+  describe('master', function(){
+    it('has workers', function() {
       clutch.countWorkers().should.equal(numWorkers);
     });
   });
-};
+}
 
-if(cluster.isMaster) setupTests();
+if (cluster.isWorker) {
+  server = require('http').createServer(function(req, res) {
+
+  }).listen(5000);
+
+  clutch.once('shutDown', process.exit);
+
+  before(function(done) {});
+
+  describe('worker', function() {
+    it('keepalive', function(done) {});
+  });
+}

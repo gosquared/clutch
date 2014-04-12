@@ -1,8 +1,8 @@
-var http = require('http');
-var Clutch = require('../lib/Clutch');
-var os = require('os');
+var http    = require('http');
+var Clutch  = require('../lib/Clutch');
+var os      = require('os');
 var cluster = require('cluster');
-var clutch = Clutch({
+var clutch  = Clutch({
   numWorkers: os.cpus().length
 });
 
