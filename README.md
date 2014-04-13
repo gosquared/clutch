@@ -1,7 +1,7 @@
 Clutch
 ===
 
-Turn your single process node.js web server into a cluster of multiple processes. This allows the server to run on multiple CPUs, and adds an extra layer of redundancy to improve reliability.
+Turn your single process node.js web server into a cluster of multiple processes ('workers'). This allows the server to run on multiple CPUs, and adds an extra layer of redundancy to improve reliability.
 
 ### Multiple processes, multiple cores
 
@@ -21,11 +21,11 @@ A convenient feature of this is a controlled shutdown procedure before the proce
 
 It is advisable to only set up a server in worker processes, so that the master's only task is to control the workers, rather than also running a web server. This is so that if there are any bugs in your server that causes crashes, it will only affect worker processes leaving the master stable and able to spawn replacement workers.
 
-### Install
+## Install
 
 `npm install gs-clutch`
 
-### Usage
+## Usage
 
 A simple web server example:
 
@@ -52,15 +52,13 @@ clutch.on('shutDown', process.exit);
 
 Now try requesting the server: `curl 'http://localhost:5000/'`
 
-### Options
+## Options
 
 **numWorkers**
 
-Default: `require('os').cpus().length`
+Default: `require('os').cpus().length``
 
-Type: `integer`
-
-Total number of worker processes to spawn & monitor. This is usually one worker per CPU.
+Number. Total number of worker processes to spawn & monitor. This is usually one worker per CPU.
 
 Note: if you have several busy servers on a single server, tweak this option to ensure you have as close to one server worker per CPU core. E.g. if you have 2 busy servers on an 8 core machine, set numWorkers to 4 to avoid [context switch inefficiency](https://engineering.gosquared.com/optimising-nginx-node-js-and-networking-for-heavy-workloads).
 
@@ -68,17 +66,13 @@ Note: if you have several busy servers on a single server, tweak this option to 
 
 Default: `true`
 
-Type: `boolean`
-
-Clutch can [rename](http://nodejs.org/api/process.html#process_process_title) the title of the process so it's easier to inspect with tools such as `htop`, `ps` etc. Set this to false if you want to leave the title alone.
+Boolean. Clutch can [rename](http://nodejs.org/api/process.html#process_process_title) the title of the process so it's easier to inspect with tools such as `htop`, `ps` etc. Set this to false if you want to leave the title alone.
 
 **name**
 
 Default: `server`
 
-Type: `string`
-
-The name to use as the label for the process title:
+String. The name to use as the label for the process title:
 
 ![](http://cl.ly/image/2T1G1L1Z391w/Screen%20Shot%202014-04-11%20at%2015.42.48.png)
 
@@ -86,9 +80,7 @@ The name to use as the label for the process title:
 
 Default: `false`
 
-Type: `boolean` or `function`
-
-If set to true, debug output will be sent to STDOUT using `console.log`.
+Boolean or function. If set to true, debug output will be sent to STDOUT using `console.log`.
 
 If you want to handle logs yourself, you can set this option to a function which will be called with the log string as an argument:
 
@@ -100,34 +92,35 @@ log: function(str){ /* Do something like send write to a different stream, updat
 
 Default: `7500`
 
-Type: `integer`
+Number, in milliseconds. Your application is expected to listen out for clutch's `shutDown` event, and exit the process after any required shutdown steps. When clutch emits `shutDown`, it also schedules a forced process exit if your application does not exit within this time. This option configures how long in milliseconds clutch waits before actioning the forced exit.
 
-Unit: ms
+## Events
 
-Your application is expected to listen out for clutch's `shutDown` event, and exit the process after any required shutdown steps. When clutch emits `shutDown`, it also schedules a forced process exit if your application does not exit within this time. This option configures how long in milliseconds clutch waits before actioning the forced exit.
+Clutch emits a range of events helping your application understand and respond to its activity.
 
-**checkInterval**
+### 'listening'
 
-Default: `200`
+At least one worker has started a server and is listening for connections.
 
-Minimum: `100`
+### 'shutDown'
 
-Type: `integer`
+A kill signal was received by the process and it should exit. Your application should listen for this event and when it fires, gracefully shut itself down (close servers, connetions, finish work) and then exit using `process.exit`.
 
-Unit: ms
+The graceful shutdown must complete within the `forceExitTimeout` time. If it doesn't, clutch will forcefully terminate the process. If your application needs more time to shut down, increase `forceExitTimeout`.
 
-How frequently worker health checks will run. The lower the value, the faster clutch will detect and respawn workers that do not appear to be functioning correctly.
+### 'workerStarted'
 
-Worker health beacons will run at a frequency of half this interval.
+A new worker has been created.
 
-Since this relies on javascript timers you may want to raise this value if your app runs at high load. This gives worker health beacons more time to reach the master if the server is busy, and help prevent dead worker false positives.
 
-It is not recommended to set this value below 100ms, because the intervals might overlap as the frequency converges at lower values.
+### 'workerDied'
 
-**maxFails**
+A worker unexpectedly exited. This is probably due to a crash in your application.
 
-Default: `6`
+### 'workerExit'
 
-Type: `integer`
+A worker gracefully quit.
 
-The number of times a worker should have consecutively failed health checks before being killed and replaced by a new worker.
+### 'noWorkers'
+
+There are no more active workers.
