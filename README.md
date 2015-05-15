@@ -41,7 +41,7 @@ var clutch = Clutch({
 
 if(cluster.isWorker){
   var server = http.createServer(function(req, res){
-    res.send('Worker: ' + cluster.worker.id);
+    res.end('Worker: ' + cluster.worker.id);
   }).listen(5000);
 }
 
